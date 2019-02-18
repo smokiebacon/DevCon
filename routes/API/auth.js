@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Auth = require('../../models/Auth');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const keys = require('../../config/keys')
 
 //GET /api/auth/test
 // @desc tests auth route
@@ -47,6 +49,15 @@ router.post('/login', async (req, res) => {
         if (loggedUser) {
             //check if password match
             if (bcrypt.compareSync(req.body.password, loggedUser.password)) {
+
+
+                //creating payload
+                const payload = {
+                    id: loggedUser.id,
+                    name: loggedUser.name
+                }
+                //sign token upon successful login
+                jwt.sign(payload, keys.secretKey)
                 res.send('Logged in successfully')
             } else {
                 res.send('Email or password is incorrect');
