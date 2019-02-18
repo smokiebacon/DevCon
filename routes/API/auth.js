@@ -49,15 +49,23 @@ router.post('/login', async (req, res) => {
         if (loggedUser) {
             //check if password match
             if (bcrypt.compareSync(req.body.password, loggedUser.password)) {
-
-
                 //creating payload
                 const payload = {
                     id: loggedUser.id,
                     name: loggedUser.name
                 }
                 //sign token upon successful login
-                jwt.sign(payload, keys.secretKey)
+                const token = jwt.sign(payload, keys.secretKey, {
+                    expiresIn: 7200
+                })
+                console.log(payload)
+                return res.json({
+                    success: true,
+                    token
+                });
+
+
+
                 res.send('Logged in successfully')
             } else {
                 res.send('Email or password is incorrect');
