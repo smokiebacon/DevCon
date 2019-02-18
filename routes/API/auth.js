@@ -6,24 +6,38 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const keys = require('../../config/keys')
 
+// load input validation
+const validateRegisterInput = require('../../validation/register')
+const validateLoginInput = require('../../validation/login')
+
+
 //GET /api/auth/test
 // @desc tests auth route
 //@access is public
-router.get('/test', (req, res) => res.json({
-    msg: "Auth works"
-}));
 
 
 //GET /api/auth/register
 // @desc Register a User
 //@access is public
 router.post('/register', async (req, res) => {
+    const {
+        errors,
+        isValid
+    } = validateRegisterInput(req.body);
+    //check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
+
+
     let user = await Auth.findOne({
         email: req.body.email
     });
     if (user) {
+        errors.email = "Email already exists"
         return res.status(400).json({
-            email: "Email already exists"
+            errors
         })
     } else {
         const password = req.body.password;
@@ -42,6 +56,15 @@ router.post('/register', async (req, res) => {
 //@access is public
 
 router.post('/login', async (req, res) => {
+    const {
+        errors,
+        isValid
+    } = validateLoginInput(req.body);
+    //check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
     try {
         //find user
         const loggedUser = await Auth.findOne({
@@ -62,14 +85,16 @@ router.post('/login', async (req, res) => {
                 console.log(payload)
                 return res.json({
                     success: true,
-                    token: 'Bearer' + token
+                    token: 'Bearer ' + token
                 });
             } else {
-                res.send('Email or password is incorrect');
+                errors.password = "Email or password is incorrect."
+                return res.status(400).json(errors);
             }
 
         } else {
-            res.send('Email does not exist');
+            errors.email = "Email is invalid."
+            return res.status(400).json(errors);
         }
     } catch (err) {
         console.log('HITTING THE ERROR', err);

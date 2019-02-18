@@ -30,6 +30,8 @@ app.use(passport.initialize());
 //Passport Config
 require('./config/passport')(passport);
 
+
+//Use Routes
 app.use('/api/auth', auth);
 app.use('/api/profile', profile);
 app.use('/api/posts', posts);
