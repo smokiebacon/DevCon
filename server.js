@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const passport = require('passport')
 const auth = require('./routes/API/auth')
 const profile = require('./routes/API/profile')
 const posts = require('./routes/API/posts')
@@ -24,7 +25,11 @@ mongoose.connect(db, {
     .then(() => console.log('Mongoose connected'))
     .catch(err => console.log(err))
 
-app.get('/', (req, res) => res.send('goobye world'))
+//Passport middleware
+app.use(passport.initialize());
+//Passport Config
+require('./config/passport')(passport);
+
 app.use('/api/auth', auth);
 app.use('/api/profile', profile);
 app.use('/api/posts', posts);

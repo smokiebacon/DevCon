@@ -3,6 +3,7 @@ const router = express.Router();
 const Auth = require('../../models/Auth');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const keys = require('../../config/keys')
 
 //GET /api/auth/test
@@ -63,10 +64,6 @@ router.post('/login', async (req, res) => {
                     success: true,
                     token
                 });
-
-
-
-                res.send('Logged in successfully')
             } else {
                 res.send('Email or password is incorrect');
             }
@@ -80,6 +77,20 @@ router.post('/login', async (req, res) => {
     }
 })
 
+//GET /api/auth/current
+// @desc returns current user
+//@access is private
+
+router.get('/current', passport.authenticate('jwt', {
+        session: false
+    }),
+    (req, res) => {
+        res.json({
+            id: req.user.id,
+            name: req.user.name,
+            email: req.user.email
+        })
+    })
 
 
 
