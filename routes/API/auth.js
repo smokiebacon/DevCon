@@ -62,7 +62,7 @@ router.post('/login', async (req, res) => {
                 console.log(payload)
                 return res.json({
                     success: true,
-                    token
+                    token: 'Bearer' + token
                 });
             } else {
                 res.send('Email or password is incorrect');
