@@ -5,7 +5,7 @@ const passport = require("passport");
 //load validation
 const validateProfileInput = require("../../validation/profile");
 const validateExperienceInput = require("../../validation/experience");
-
+const validateEducationInput = require("../../validation/education");
 const Profile = require("../../models/Profile");
 const Auth = require("../../models/Auth");
 
@@ -205,13 +205,7 @@ router.post(
             user: req.user.id
         }).then(profile => {
             const newExp = {
-                title: req.body.title,
-                company: req.body.company,
-                location: req.body.location,
-                from: req.body.from,
-                to: req.body.to,
-                current: req.body.current,
-                description: req.body.description
+                ...req.body
             };
 
             // Add to exp array
@@ -246,13 +240,7 @@ router.post(
             user: req.user.id
         }).then(profile => {
             const newEdu = {
-                school: req.body.school,
-                degree: req.body.degree,
-                fieldofstudy: req.body.fieldofstudy,
-                from: req.body.from,
-                to: req.body.to,
-                current: req.body.current,
-                description: req.body.description
+                ...req.body
             };
 
             // Add to edu array
