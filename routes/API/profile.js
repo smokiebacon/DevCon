@@ -1,22 +1,28 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
-const passport = require('passport');
+const mongoose = require("mongoose");
+const passport = require("passport");
+//load validation
+const validateProfileInput = require('../../validation/profile')
 
-const Profile = require('../../models/Profile');
-const Auth = require('../../models/Auth');
+const Profile = require("../../models/Profile");
+const Auth = require("../../models/Auth");
 
 //GET /api/profile/test
 // @desc tests auth route
 //@access is public
-router.get('/test', (req, res) => res.json({
-    msg: "Profile works"
-}));
+router.get("/test", (req, res) =>
+    res.json({
+        msg: "Profile works"
+    })
+);
 
 //GET /api/profile/ instead of :id, can get JWT token to uniquely identiy user
 // @desc get current user profile
 //@access is private
-router.get('/', passport.authenticate('jwt', {
+router.get(
+    "/",
+    passport.authenticate("jwt", {
         session: false
     }),
     async (req, res) => {
@@ -24,26 +30,38 @@ router.get('/', passport.authenticate('jwt', {
         try {
             const foundProfile = await Profile.findOne({
                 user: req.user.id
-            })
+            });
             if (!foundProfile) {
-                errors.noprofile = 'There is no profile for this user';
+                errors.noprofile = "There is no profile for this user";
                 return res.status(404).json(errors);
             }
         } catch (err) {
-            res.status(404).json(err)
+            res.status(404).json(err);
         }
     }
 );
 
-//GET /api/profile/ 
+//GET /api/profile/
 // @desc CREATE user profile
 //@access is private
-router.post('/', passport.authenticate('jwt', {
+router.post(
+    "/",
+    passport.authenticate("jwt", {
         session: false
     }),
     async (req, res) => {
+        const {
+            errors,
+            isValid
+        } = validateProfileInput(req.body);
+        //check validation
+        if (!isValid) {
+            //return any errors with 400 status
+            return res.status(400).json(errors)
+        }
+
         const profileFields = {};
-        profileFields.user = req.user.id
+        profileFields.user = req.user.id;
         if (req.body.handle) profileFields.handle = req.body.handle;
         if (req.body.company) profileFields.company = req.body.company;
         if (req.body.website) profileFields.website = req.body.website;
@@ -53,8 +71,8 @@ router.post('/', passport.authenticate('jwt', {
         if (req.body.githubusername)
             profileFields.githubusername = req.body.githubusername;
         //Skills, split into arrays b/c coming in as comma separated values
-        if (typeof req.body.skills !== 'undefined') {
-            profileFields.skills = req.body.skills.split(',');
+        if (typeof req.body.skills !== "undefined") {
+            profileFields.skills = req.body.skills.split(",");
         }
         // Social
         profileFields.social = {};
@@ -65,15 +83,39 @@ router.post('/', passport.authenticate('jwt', {
         if (req.body.instagram) profileFields.social.instagram = req.body.instagram;
 
         try {
+            const foundUser = await Profile.findOne({
+                user: req.user.id
+            }).populate('user', ['name']);
 
+            if (foundUser) {
+                //find and update
+                await Profile.findOneAndUpdate({
+                    user: req.user.id
+                }, {
+                    $set: profileFields
+                }, {
+                    new: true
+                });
 
-        } catch {
+                res.json(foundUser);
+            } else {
+                //create
+                //check if handle exists
+                await Profile.findOne({
+                    handle: profileFields.handle
+                });
+                if (foundUser) {
+                    errors.handle = "Handle already exists";
+                    res.status(400).json(errors);
+                }
 
+                await new Profile(profileFields).save();
+                res.json(foundUser);
+            }
+        } catch (err) {
+            res.json(err);
         }
-
     }
 );
-
-
 
 module.exports = router;
