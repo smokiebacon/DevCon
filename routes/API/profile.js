@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const passport = require("passport");
 //load validation
-const validateProfileInput = require('../../validation/profile')
+const validateProfileInput = require("../../validation/profile");
 
 const Profile = require("../../models/Profile");
 const Auth = require("../../models/Auth");
@@ -40,49 +40,64 @@ router.get(
         }
     }
 );
+//GET /api/profile/all
+// @desc Get all profiles
+//@access is public
+router.get("/all", async (req, res) => {
+    const errors = {};
+    try {
+        const allUsers = await Profile.find({}).populate("user", ["name"]);
+        if (!allUsers) {
+            errors.noprofile = "No profiles to display";
+            return res.status(404).json(errors);
+        }
+        res.json(allUsers);
+    } catch (errs) {
+        res.status(404).json({
+            profile: "There are no profiles"
+        });
+    }
+});
 
 //GET /api/profile/handle/:id
 // @desc Get Profile by handle
 //@access is public
-router.get('/handle/:handle', async (req, res) => {
+router.get("/handle/:handle", async (req, res) => {
+    const errors = {};
     try {
         const foundHandle = await Profile.findOne({
-                handle: req.params.handle
-            })
-            .populate('user', ['name'])
+            handle: req.params.handle
+        }).populate("user", ["name"]);
         if (!foundHandle) {
-            errors.noprofile = "There is no profile for this user"
+            errors.noprofile = "There is no profile for this user";
             res.status(404).json(errors);
         }
-        res.json(foundHandle)
+        res.json(foundHandle);
     } catch (errs) {
-        res.status(404).json({
-            profile: 'There is no profile for this user'
-        })
+        res.status(404).json(errs);
     }
-})
+});
 
 //GET /api/profile/user/:user_id
 // @desc Get Profile by user ID
 //@access is public
-router.get('/user/:user_id', async (req, res) => {
+router.get("/user/:user_id", async (req, res) => {
+    const errors = {};
     try {
         const foundHandle = await Profile.findOne({
-                handle: req.params.user_id
-            })
-            .populate('user', ['name'])
+            user: req.params.user_id
+        }).populate("user", ["name"]);
         if (!foundHandle) {
-            errors.noprofile = "There is no profile for this user"
+            errors.noprofile = "There is no profile for this user";
             res.status(404).json(errors);
         }
-        res.json(foundHandle)
+        res.json(foundHandle);
     } catch (errs) {
-        res.status(404).json(errs)
+        res.status(404).json({
+            profile: "There is no profile for this user"
+        });
     }
-})
-
-
-
+});
 
 //GET /api/profile/
 // @desc CREATE user profile
@@ -100,7 +115,7 @@ router.post(
         //check validation
         if (!isValid) {
             //return any errors with 400 status
-            return res.status(400).json(errors)
+            return res.status(400).json(errors);
         }
 
         const profileFields = {};
@@ -128,7 +143,7 @@ router.post(
         try {
             const foundUser = await Profile.findOne({
                 user: req.user.id
-            }).populate('user', ['name']);
+            }).populate("user", "name");
 
             if (foundUser) {
                 //find and update
@@ -139,7 +154,7 @@ router.post(
                 }, {
                     new: true
                 });
-
+                console.log(foundUser)
                 res.json(foundUser);
             } else {
                 //create
