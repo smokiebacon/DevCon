@@ -41,9 +41,52 @@ router.get(
     }
 );
 
+//GET /api/profile/handle/:id
+// @desc Get Profile by handle
+//@access is public
+router.get('/handle/:handle', async (req, res) => {
+    try {
+        const foundHandle = await Profile.findOne({
+                handle: req.params.handle
+            })
+            .populate('user', ['name'])
+        if (!foundHandle) {
+            errors.noprofile = "There is no profile for this user"
+            res.status(404).json(errors);
+        }
+        res.json(foundHandle)
+    } catch (errs) {
+        res.status(404).json({
+            profile: 'There is no profile for this user'
+        })
+    }
+})
+
+//GET /api/profile/user/:user_id
+// @desc Get Profile by user ID
+//@access is public
+router.get('/user/:user_id', async (req, res) => {
+    try {
+        const foundHandle = await Profile.findOne({
+                handle: req.params.user_id
+            })
+            .populate('user', ['name'])
+        if (!foundHandle) {
+            errors.noprofile = "There is no profile for this user"
+            res.status(404).json(errors);
+        }
+        res.json(foundHandle)
+    } catch (errs) {
+        res.status(404).json(errs)
+    }
+})
+
+
+
+
 //GET /api/profile/
 // @desc CREATE user profile
-//@access is private
+//@access is Private
 router.post(
     "/",
     passport.authenticate("jwt", {
