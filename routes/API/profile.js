@@ -232,7 +232,7 @@ router.post(
     // Check Validation
     if (!isValid) {
       // Return any errors with 400 status
-      return res.status(400).json(errors);
+      return res.status(404).json(errors);
     }
     const foundProfile = await Profile.findOne({
       user: req.user.id
@@ -255,12 +255,12 @@ router.post(
 // @route   DELETE api/profile/EXPERIENCE/:exp_id
 // @desc    Delete experience to profile
 // @access  Private
-router.post(
+router.delete(
   "/experience/:exp_id",
   passport.authenticate("jwt", {
     session: false
   }),
-  (req, res) => {
+  async (req, res) => {
     const { errors, isValid } = validateExperienceInput(req.body);
 
     // Check Validation
@@ -268,25 +268,48 @@ router.post(
       // Return any errors with 400 status
       return res.status(400).json(errors);
     }
-
-    Profile.findOne({
-      user: req.user.id
-    }).then(profile => {
-      const newExp = {
-        title: req.body.title,
-        company: req.body.company,
-        location: req.body.location,
-        from: req.body.from,
-        to: req.body.to,
-        current: req.body.current,
-        description: req.body.description
-      };
-
-      // Add to exp array
-      profile.experience.unshift(newExp);
-
-      profile.save().then(profile => res.json(profile));
-    });
+    try {
+      const deleteExperience = await Profile.findOne({ user: req.user.id });
+      const removeIndex = deleteExperience.experience
+        .map(item => item.id)
+        .indexOf(req.params.exp_id);
+      deleteExperience.experience.splice(removeIndex, 1);
+      deleteExperience.save();
+      res.json(deleteExperience);
+    } catch (errors) {
+      res.status(404).json(errors);
+    }
   }
 );
+
+// @route   DELETE api/profile/EDUCATION/:edu_id
+// @desc    Delete EDUCATION from profile
+// @access  Private
+router.delete(
+  "/education/:exp_id",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  async (req, res) => {
+    const { errors, isValid } = validateExperienceInput(req.body);
+
+    // Check Validation
+    if (!isValid) {
+      // Return any errors with 400 status
+      return res.status(400).json(errors);
+    }
+    try {
+      const deleteEdu = await Profile.findOne({ user: req.user.id });
+      const removeIndex = deleteEdu.education
+        .map(item => item.id)
+        .indexOf(req.params.exp_id);
+      deleteEdu.education.splice(removeIndex, 1);
+      deleteEdu.save();
+      res.json(deleteEdu);
+    } catch (errors) {
+      res.status(404).json(errors);
+    }
+  }
+);
+
 module.exports = router;
