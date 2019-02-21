@@ -261,13 +261,6 @@ router.delete(
     session: false
   }),
   async (req, res) => {
-    const { errors, isValid } = validateExperienceInput(req.body);
-
-    // Check Validation
-    if (!isValid) {
-      // Return any errors with 400 status
-      return res.status(400).json(errors);
-    }
     try {
       const deleteExperience = await Profile.findOne({ user: req.user.id });
       const removeIndex = deleteExperience.experience
@@ -291,13 +284,6 @@ router.delete(
     session: false
   }),
   async (req, res) => {
-    const { errors, isValid } = validateExperienceInput(req.body);
-
-    // Check Validation
-    if (!isValid) {
-      // Return any errors with 400 status
-      return res.status(400).json(errors);
-    }
     try {
       const deleteEdu = await Profile.findOne({ user: req.user.id });
       const removeIndex = deleteEdu.education
