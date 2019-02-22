@@ -5,7 +5,6 @@ const passport = require('passport');
 
 //post model
 const Post = require('../../models/Posts');
-const Profile = require('../../models/Profile');
 
 //Validation form
 const validatePostInput = require('../../validation/post')
@@ -93,4 +92,26 @@ router.delete('/:id', passport.authenticate('jwt', {
         res.status(404).json(errors);
     };
 })
+
+//route POST /api/posts/like/:id
+// @desc like a post
+//@access is private
+router.post('/like/:id', passport.authenticate("jwt", {
+    session: false
+}), async (req, res) => {
+    const post = await Post.findById(req.params.id);
+    if (post == null) return res.status(404).json({
+        postnotfound: 'No post found'
+    });
+    const index = post.likes.findIndex(l => {
+        return l.user == req.user.id
+    });
+    index === -1 ? post.likes.push({
+        user: req.user.id
+    }) : post.likes.splice(index, 1);
+    await post.save();
+    res.json(post);
+})
+
+
 module.exports = router;
