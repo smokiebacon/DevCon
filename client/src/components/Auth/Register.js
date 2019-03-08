@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { registerUser } from '../../actions/authActions';
@@ -14,6 +14,13 @@ class Register extends Component {
       errors: {}
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      })
+    }
+  }
   onChange = (e) => {
       this.setState({
           [e.target.name] : e.target.value
@@ -28,17 +35,12 @@ class Register extends Component {
           password2: this.state.password
       }
 
-      this.props.registerUser(newUser)
-      // axios.post('/api/auth/register', newUser)
-      //   .then(res => console.log(res.data))
-      //   .catch(err => this.setState({
-      //       errors: err.response.data
-      //   }))
+      this.props.registerUser(newUser, this.props.history)
+     
   }
 
   render() {
       const { errors } = this.state;
-      const { user } = this.props.auth;
     return (
         <div className="register">
         <div className="container">
@@ -100,9 +102,16 @@ class Register extends Component {
 
 Register.propTypes = {
   registerUser : PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
-}
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired 
+} //propTypes is to figure our why our code isn't working.
+//Proptypes is used to define types like 
+//strings, functions, number, etc. With 
+//types defined we know what to expect for our incoming data.
+
+
 const mapStateToProps = (state) => ({
-  auth: state.auth
+  auth: state.auth,
+  errors: state.errors
 })
-export default connect(mapStateToProps, { registerUser })(Register);
+export default connect(mapStateToProps, { registerUser })(withRouter(Register));
