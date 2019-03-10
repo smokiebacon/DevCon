@@ -57,12 +57,11 @@ class Navbar extends Component {
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link 
-                className="nav-link" to="/profiles"> Developers
+                className="nav-link" to="/profiles"> {' '} Developers
             </Link>
           </li>
         </ul>
-
-      
+      {isAuthenticated ? authLinks : guestLinks }
       </div>
     </div>
   </nav>
