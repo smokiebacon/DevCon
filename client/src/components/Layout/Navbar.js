@@ -11,17 +11,16 @@ class Navbar extends Component {
   }
   
   render() {
-    const { isAuthenticated, user } = this.props.auth;
+    const { isAuthenticated } = this.props.auth;
     const authLinks = (
       <ul className="navbar-nav ml-auto">
       <li className="nav-item">
-        <a href="#" onClick={this.onLogoutClick}></a>
-      </li>
-      <li className="nav-item">
-        <Link 
-            className="nav-link" to="/login">
-            Login
-        </Link>
+        <a  href=""
+            onClick={this.onLogoutClick}
+            className="nav-link" 
+            >
+            Logout
+        </a>
       </li>
     </ul>
     )
@@ -57,7 +56,7 @@ class Navbar extends Component {
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link 
-                className="nav-link" to="/profiles"> {' '} Developers
+                className="nav-link" to="/profiles"> Developers
             </Link>
           </li>
         </ul>
