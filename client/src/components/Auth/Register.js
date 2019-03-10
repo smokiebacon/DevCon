@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { registerUser } from '../../actions/authActions';
@@ -12,12 +12,6 @@ class Register extends Component {
       password: '',
       password2: '',
       errors: {}
-  }
-  componentDidMount () {
-    //check to see if we're logged in
-    if(this.props.auth.isAuthenticated) {
-        this.props.history.push('/dashboard');
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,6 +41,9 @@ class Register extends Component {
 
   render() {
       const { errors } = this.state;
+      if (this.props.auth.isAuthenticated) {
+        return <Redirect to="/dashboard" />;
+      }
     return (
         <div className="register">
         <div className="container">
