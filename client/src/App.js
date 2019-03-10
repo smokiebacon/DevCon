@@ -13,6 +13,7 @@ import Login from './components/Auth/Login';
 
 import './App.css';
 
+//keeps user logged in if they go to any page or on page refresh.
 //check for Token
 if(localStorage.jwtToken) {
   //set auth Token header auth
@@ -21,9 +22,8 @@ if(localStorage.jwtToken) {
   const decoded = jwt_decode(localStorage.jwtToken);
   //Sets current user and isAuthenticated
   store.dispatch(setCurrentUser(decoded))
-
-
 }
+
 class App extends Component {
   render() {
     return (
