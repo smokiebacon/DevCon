@@ -10,7 +10,7 @@ class Landing extends Component {
     if (this.props.auth.isAuthenticated) {
       return <Redirect to="/dashboard" />;
     }
-    
+
     return (
 <div>
     <div class="landing">

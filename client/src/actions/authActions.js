@@ -53,4 +53,5 @@ export const logoutUser = () => dispatch => {
     //set current user to empty object, which will
     //also set isAuthenticiated to false
     dispatch(setCurrentUser({}));
+    window.location.href = '/login'
 }
