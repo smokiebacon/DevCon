@@ -5,10 +5,28 @@ import PropTypes from 'prop-types';
 import { logoutUser } from '../../actions/authActions';
 
 class Navbar extends Component {
+  onLogoutClick = (e) => {
+    e.preventDefault()
+    this.props.logoutUser();
+  }
   
   render() {
     const { isAuthenticated, user } = this.props.auth;
     const authLinks = (
+      <ul className="navbar-nav ml-auto">
+      <li className="nav-item">
+        <a href="#" onClick={this.onLogoutClick}></a>
+      </li>
+      <li className="nav-item">
+        <Link 
+            className="nav-link" to="/login">
+            Login
+        </Link>
+      </li>
+    </ul>
+    )
+
+    const guestLinks = (
       <ul className="navbar-nav ml-auto">
       <li className="nav-item">
         <Link 
