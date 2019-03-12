@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import { getCurrentProfile } from '../../actions/profileActions'
-
+import Spinner from '../common/spinner'
 
 
 class Dashboard extends Component {
@@ -10,9 +10,27 @@ class Dashboard extends Component {
         this.props.getCurrentProfile();
     }
   render() {
+      const { user } = this.props.auth;
+      const { profile, loading } = this.props.profile;
+      
+      let dashBoardContent;
+      
+      if(profile === null || loading) {
+        dashBoardContent = <Spinner />
+      } else {
+        dashBoardContent = <h1>Hello</h1>
+      }
+
     return (
-      <div>
-        <h1>Dashboard</h1>
+      <div className = "dashboard">
+        <div className = "container">
+            <div className ="row">
+                <div className="col-md-12">
+                <h1 className ="display-4"> Dashboard</h1>
+                 {dashBoardContent}
+                </div>
+            </div>
+        </div>
       </div>
     )
   }
