@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Provider } from 'react-redux';
 import store from './Store';
 import jwt_decode from 'jwt-decode';
@@ -12,6 +12,7 @@ import Landing from './components/Layout/Landing';
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import Dashboard from './components/Dashboard/Main';
+import PrivateRoute from './components/common/PrivateRoute'
 
 import './App.css';
 
@@ -49,8 +50,9 @@ class App extends Component {
            <div className="container">
              <Route exact path="/login" component= { Login } />
              <Route exact path="/register" component= { Register } />
-             <Route exact path="/dashboard" component= { Dashboard } />
-
+             <Switch>
+             <PrivateRoute exact path="/dashboard" component= { Dashboard } />
+             </Switch>
            </div>
          <Footer />
        </div>

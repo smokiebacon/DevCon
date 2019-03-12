@@ -27,7 +27,7 @@ class Dashboard extends Component {
             dashBoardContent = (
                 <div>
                     <p className = "lead text-muted"> Welcome { user.name } </p>
-                    <p>You have added a profile. Please create a profile!</p>
+                    <p>You have not added a profile yet. Please create a profile!</p>
                     <Link to="/create-profile" className="btn btn-lg btn-info"> Create Profile</Link>
                 </div>
             )
