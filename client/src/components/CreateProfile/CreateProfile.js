@@ -6,6 +6,7 @@ import TextAreaFieldGroup from '../common/TextAreaFieldGroup';
 import TextFieldGroup from '../common/TextFieldGroup';
 import SelectListGroup from '../common/SelectListGroup';
 import InputGroup from '../common/InputGroup';
+import { createProfile } from '../../actions/profileActions';
 
 class CreateProfile extends Component {
     state = {
@@ -14,8 +15,9 @@ class CreateProfile extends Component {
         company: '',
         website: '',
         location: '',
-        status:'',
-        githubusername:'',
+        status: '',
+        skills: '',
+        githubusername: '',
         bio: '',
         twitter: '',
         facebook: '',
@@ -24,16 +26,31 @@ class CreateProfile extends Component {
         instagram: '',
         errors: {}
     }
+  
+    static getDerivedStateFromProps = nextProps => {
+        return { errors: nextProps.errors };
+    };
+
+    onSubmit = (e) => {
+        e.preventDefault();
+        const profileData = {
+          ...this.state
+        };
+        delete profileData["displaySocialInputs"];
+        delete profileData["errors"];
+     
+        this.props.createProfile(profileData, this.props.history);
+    }
+    
     onChange = (e) => {
+        console.log(this.state, 'THIS IS FROM ONCHANGE HANDLER')
         this.setState({
             [e.target.name] : e.target.value
         })
     }
 
-    onSubmit = (e) => {
-        e.preventDefault()
-        console.log('i am clicked')
-    }
+   
+
   render() {
       const { errors, displaySocialInputs } = this.state;
       let socialInputs;
@@ -93,7 +110,7 @@ class CreateProfile extends Component {
         <div className="container">
             <div className="row">
                 <div className="col-md-8 md-auto">
-                    <h1 className="display-4 text-center"></h1>
+                    <h1 className="display-4 text-center">Create Your Profile</h1>
                     <p className="lead text-center">
                     Let's get some information to make your profile stand out!
                     </p>
@@ -197,4 +214,4 @@ const mapStateToProps = state => ({
     errors: state.errors
 })
 
-export default withRouter(connect(mapStateToProps)(CreateProfile));
+export default withRouter(connect(mapStateToProps,{ createProfile })(CreateProfile));
