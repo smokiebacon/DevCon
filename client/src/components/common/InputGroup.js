@@ -8,7 +8,6 @@ const InputGroup = ({
     value,
     error,
     icon,
-    type,
     onChange
 }) => {
   return (
@@ -18,7 +17,7 @@ const InputGroup = ({
             <i className={icon} />
         </span>
     </div>
-    <textarea
+    <input
     className={classnames("form-control form-control-lg",
         {"is-invalid" : error })}           
     placeholder= {placeholder} 
