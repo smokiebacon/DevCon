@@ -36,20 +36,17 @@ class CreateProfile extends Component {
         const profileData = {
           ...this.state
         };
-        delete profileData["displaySocialInputs"];
-        delete profileData["errors"];
+        // delete profileData["displaySocialInputs"];
+        // delete profileData["errors"];
      
         this.props.createProfile(profileData, this.props.history);
     }
     
     onChange = (e) => {
-        console.log(this.state, 'THIS IS FROM ONCHANGE HANDLER')
         this.setState({
             [e.target.name] : e.target.value
         })
     }
-
-   
 
   render() {
       const { errors, displaySocialInputs } = this.state;
@@ -183,7 +180,7 @@ class CreateProfile extends Component {
                             info="Tell us a bit about yourself."
                         />
                         <div className="mb-3">
-                            <button onClick={() => {
+                            <button type="button" onClick={() => {
                                 this.setState(
                                     previousState => ({
                                         displaySocialInputs : !previousState.displaySocialInputs
@@ -208,10 +205,13 @@ class CreateProfile extends Component {
 CreateProfile.propTypes = {
     profile: PropTypes.object.isRequired,
     errors: PropTypes.object.isRequired
-}
+};
+  
 const mapStateToProps = state => ({
     profile: state.profile,
     errors: state.errors
 })
 
-export default withRouter(connect(mapStateToProps,{ createProfile })(CreateProfile));
+export default connect(mapStateToProps, { createProfile })(
+    withRouter(CreateProfile)
+  );

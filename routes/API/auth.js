@@ -77,7 +77,7 @@ router.post('/login', async (req, res) => {
                 }
                 //sign token upon successful login
                 const token = jwt.sign(payload, keys.secretKey, {
-                    expiresIn: 7200
+                    expiresIn: '3h'
                 })
                 console.log(payload)
                 return res.json({

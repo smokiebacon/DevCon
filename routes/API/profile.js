@@ -31,7 +31,9 @@ router.get(
     try {
       const foundProfile = await Profile.findOne({
         user: req.user.id
-      });
+      }).populate('user', ['name']);
+      console.log(foundProfile,'THIS IS FOUND PROFILE FROM PROFILE.JS')
+      res.json(foundProfile);
       if (!foundProfile) {
         errors.noprofile = "There is no profile for this user";
         return res.status(404).json(errors);

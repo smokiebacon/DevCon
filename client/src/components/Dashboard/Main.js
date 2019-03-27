@@ -8,19 +8,22 @@ import { Link } from 'react-router-dom';
 class Dashboard extends Component {
     componentDidMount () {
         this.props.getCurrentProfile();
+        console.log(this.props, 'THIS IS PROPS FROM MAIN.JS')
     }
   render() {
+    
       const { user } = this.props.auth;
       const { profile, loading } = this.props.profile;
       
       let dashBoardContent;
+      console.log(this.props.profile,'THIS IS PROFILE')
       
       if(profile === null || loading) {
         dashBoardContent = <Spinner />
       } else {
           //check if logged in User has profile data
           if (Object.keys(profile).length > 0) {
-            dashBoardContent = <h2>DISPLAY PROFILE TO DO</h2>  
+            dashBoardContent = <h2>TO DO DISPLAY PROFILE </h2>  
           } else {
             //User is logged in, but has no profile yet.
             //create profile
